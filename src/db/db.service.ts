@@ -4,7 +4,7 @@ const dbPath = './data/expenses.db';
 
 const db = new Database(dbPath, { verbose: console.log });
 
-const initializeDatabase = () => {
+export const setupDatabase = () => {
   try {
     db.exec(`
         CREATE TABLE IF NOT EXISTS expenses (
@@ -16,13 +16,17 @@ const initializeDatabase = () => {
           date DATETIME DEFAULT CURRENT_TIMESTAMP
         )
       `);
-    console.log('Database initialized and schema created.');
+    console.log('Database is set up and schema created.');
   } catch (error) {
-    console.error('Failed to initialize the database:', Error);
+    if (error instanceof Error) {
+      console.error('Failed to set up the database:', error.message);
+    } else {
+      console.error('Failed to set up the database: Unknown error');
+    }
     throw error;
   }
 };
 
-initializeDatabase();
-
-export default db;
+export function getDb() {
+  return db;
+}
