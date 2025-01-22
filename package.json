@@ -13,9 +13,12 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{ts,js}": [
+    "src/**/*.{ts, tsx, js, jsx}": [
       "eslint --fix",
-      "prettier --write ."
+      "prettier --write"
+    ],
+    "src/**/*{json,css,md}": [
+      "prettrier --write"
     ]
   },
   "repository": {
@@ -31,10 +34,12 @@
   "homepage": "https://github.com/moharso/expense-tracker-backend#readme",
   "devDependencies": {
     "@eslint/js": "^9.18.0",
-    "@types/express": "^5.0.0",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/express": "^4.17.21",
     "@types/node": "^22.10.7",
     "@typescript-eslint/eslint-plugin": "^8.20.0",
     "@typescript-eslint/parser": "^8.20.0",
+    "better-sqlite3": "^11.8.1",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
