@@ -45,4 +45,17 @@ const findById = async (id: number) => {
   return await db.expense.findUnique({ where: { id } });
 };
 
-export default { create, findAll, findById };
+const update = async (id: number, data: Partial<Expense>) => {
+  return await db.expense.update({
+    where: { id },
+    data,
+  });
+};
+
+const deleteOne = async (id: number) => {
+  return await db.expense.delete({
+    where: { id },
+  });
+};
+
+export default { create, findAll, findById, update, deleteOne };

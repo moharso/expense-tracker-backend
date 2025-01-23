@@ -6,6 +6,7 @@ import {
 } from '../helpers/middlewares/validator';
 import CreateExpenseDTO from './dto/create-expense.dto';
 import expensesService from './expenses.service';
+import UpdateExpenseDTO from './dto/update-expense.dto';
 
 const router = Router();
 
@@ -14,6 +15,12 @@ const errorMessage = (error: unknown): string => {
     return error.message;
   }
   return 'Unknown error';
+};
+
+const handleErrorResponse = (res: Response, error: unknown) => {
+  res
+    .status(500)
+    .json({ message: 'An error occurred', error: errorMessage(error) });
 };
 
 router.post(
@@ -25,9 +32,7 @@ router.post(
       const expense = await expensesService.createExpense(req.body);
       res.status(201).json({ message: 'Expense added', expense });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: 'Error adding expense', error: errorMessage(error) });
+      handleErrorResponse(res, error);
     }
   },
 );
@@ -48,10 +53,7 @@ router.get(
       });
       res.status(200).json(expenses);
     } catch (error) {
-      res.status(500).json({
-        message: 'Error retrieving expenses',
-        error: errorMessage(error),
-      });
+      handleErrorResponse(res, error);
     }
   },
 );
@@ -70,14 +72,48 @@ router.get(
       }
       res.status(200).json(expense);
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: 'Error retrieving expense',
-          error: errorMessage(error),
-        });
+      handleErrorResponse(res, error);
     }
   },
 );
+
+router.patch(
+  '/:id',
+  UpdateExpenseDTO,
+  validateRequest,
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const expenseData = req.body;
+
+    try {
+      const updatedExpense = await expensesService.updateExpense(
+        Number(id),
+        expenseData,
+      );
+      if (!updatedExpense) {
+        return res.status(404).json({ message: 'Expense not found' });
+      }
+      res.status(200).json({ message: 'Expense updated', updatedExpense });
+    } catch (error) {
+      handleErrorResponse(res, error);
+    }
+  },
+);
+
+router.delete('/:id', async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const deletedExpense = await expensesService.deleteExpense(
+      parseInt(id, 10),
+    );
+    if (!deletedExpense) {
+      return res.status(404).json({ message: 'Expense not found' });
+    }
+    res.status(200).json({ message: 'Expense deleted', deletedExpense });
+  } catch (error) {
+    handleErrorResponse(res, error);
+  }
+});
 
 export default router;

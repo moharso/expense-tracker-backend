@@ -1,35 +1,35 @@
 import { body } from 'express-validator';
 
-const CreateExpenseDTO = [
+const UpdateExpenseDTO = [
   body('name')
+    .optional()
     .isString()
     .trim()
-    .notEmpty()
-    .withMessage('Name is required')
     .isLength({ max: 255 })
     .withMessage('Name must not exceed 255 characters'),
 
   body('amount')
+    .optional()
     .isNumeric()
     .withMessage('Amount must be a number')
     .isFloat({ gt: 0 })
     .withMessage('Amount must be a positive number'),
 
   body('currency')
+    .optional()
     .isString()
     .trim()
     .isLength({ min: 3, max: 3 })
     .withMessage('Currency must be a 3-character ISO code'),
 
   body('category')
+    .optional()
     .isString()
     .trim()
-    .notEmpty()
-    .withMessage('Category is required')
     .isLength({ max: 255 })
     .withMessage('Category must not exceed 255 characters'),
 
-  body('date').isISO8601().withMessage('Date must be in ISO format'),
+  body('date').optional().isISO8601().withMessage('Date must be in ISO format'),
 ];
 
-export default CreateExpenseDTO;
+export default UpdateExpenseDTO;
